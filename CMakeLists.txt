@@ -9,11 +9,21 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 project(SDL2Test)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+file(GLOB_RECURSE SOURCES "./src/*.cpp")
 
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS} src)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-add_executable(SnakeGame src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/snake.cpp)
-string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
-target_link_libraries(SnakeGame ${SDL2_LIBRARIES})
+find_package(SDL2 CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+#include_directories(${SDL2_INCLUDE_DIRS} src)
+
+add_executable (SnakeGame ${SOURCES})
+#string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
+
+#target_link_libraries(SnakeGame ${SDL2_LIBRARIES})
+target_link_libraries(SnakeGame
+    PRIVATE
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    imgui::imgui
+)

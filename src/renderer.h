@@ -2,8 +2,10 @@
 #define RENDERER_H
 
 #include <vector>
-#include "SDL.h"
-#include "snake.h"
+#include <memory>
+
+//#include "snake.h"
+#include "game_state_manager.hpp"
 
 class Renderer {
  public:
@@ -11,8 +13,9 @@ class Renderer {
            const std::size_t grid_width, const std::size_t grid_height);
   ~Renderer();
 
-  void Render(Snake const snake, SDL_Point const &food);
-  void UpdateWindowTitle(int score, int fps);
+  //void RenderSnake(Snake const &snake, SDL_Rect &block);
+  void Render(std::unique_ptr<GameStateManager>& stateManager/*Snake const &snake, Snake const &snake2, SDL_Point const &food*/) const;
+  void UpdateWindowTitle(int fps) const;
 
  private:
   SDL_Window *sdl_window;
