@@ -7,31 +7,29 @@
 class GameStateFactory
 {
 public:
-    GameStateFactory(int grid_width, int grid_height)
-        : grid_width_{grid_width}
-        , grid_height_{grid_height}
+    GameStateFactory(const std::size_t screenWidth, const std::size_t screenHeight)
+        : screenWidth_{ screenWidth }, screenHeight_{ screenHeight }
     {}
 
     ~GameStateFactory() = default;
 
 public:
-    std::unique_ptr<GameStateBase> CreateGameState(GameStateType type) {
+    std::unique_ptr<GameStateBase> CreateGameState(const GameStateType type) {
         switch (type) {
             case GameStateType::MAIN_MENU:
-                return std::make_unique<MainMenuState>();
+                return std::make_unique<MainMenuState>(screenWidth_, screenHeight_);
             case GameStateType::SINGLE_PLAYER_GAME:
-                return std::make_unique<SinglePlayerGameState>(grid_width_, grid_height_);
+                return std::make_unique<SinglePlayerGameState>(screenWidth_, screenHeight_);
             case GameStateType::PvP_GAME:
-                return std::make_unique<PvPGameState>(grid_width_, grid_height_);
+                return std::make_unique<PvPGameState>(screenWidth_, screenHeight_);
             case GameStateType::PAUSE_GAME:
-                return std::make_unique<PauseGameState>();
+                return std::make_unique<PauseGameState>(screenWidth_, screenHeight_);
             default:
                 return nullptr;
         }
     }
 
 private:
-    int grid_width_;
-    int grid_height_;
-
+    std::size_t screenWidth_;
+    std::size_t screenHeight_;
 };

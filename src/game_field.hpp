@@ -12,17 +12,17 @@
 class GameField
 {
 public:
-    GameField(const std::size_t grid_width, const std::size_t grid_height)
-        : width_{ grid_width }
-        , height_{ grid_height }
+    GameField(const std::size_t gridWidth, const std::size_t gridHeight)
+        : gridWidth_{ gridWidth }
+        , gridHeight_{ gridHeight }
     {}
     virtual ~GameField() {}
 
 public:
     virtual void Init() = 0;
     virtual GameFieldState Update() = 0;
-    virtual void Render(SDL_Renderer* sdl_renderer, SDL_Rect& block) = 0;
-    virtual void HandleInput(SDL_Keycode key_code) = 0;
+    virtual void Render(SDL_Renderer* sdlRenderer, SDL_Rect& block) = 0;
+    virtual void HandleInput(SDL_Keycode keyCode) = 0;
 
     virtual int PlayerScore(PlayerId player_id) const = 0;
 
@@ -37,12 +37,11 @@ public:
     }
 
 protected:
+    std::size_t gridWidth_;
+    std::size_t gridHeight_;
+
     GameFieldState gameFieldState_{ GameFieldState::NONE };
     std::unordered_map<PlayerId, std::unique_ptr<Player>> players_{};
-
-private:
-    std::size_t width_;
-    std::size_t height_;
 };
 
 class NullGameField : public GameField
@@ -66,11 +65,11 @@ public:
 class PlayerGameField : public GameField
 {
 public:
-    PlayerGameField(std::size_t grid_width, std::size_t grid_height)
-        : GameField(grid_width, grid_height),
+    PlayerGameField(std::size_t gridHidth, std::size_t gridHeight)
+        : GameField(gridHidth, gridHeight),
         randomEngine_(randomDev_()),
-        randomWidth_(0, static_cast<int>(grid_width - 1)),
-        randomHeight_(0, static_cast<int>(grid_height - 1))
+        randomWidth_(0, static_cast<int>(gridHidth - 1)),
+        randomHeight_(0, static_cast<int>(gridHeight - 1))
     {}
 
     ~PlayerGameField() = default;
@@ -80,9 +79,9 @@ public:
             player->Init();
         }
 
-        for (std::size_t i = 0; i <= 32; ++i) {
+        for (std::size_t i = 0; i <= gridWidth_; ++i) {
             fieldCells_.emplace(i, std::unordered_map<std::size_t, CellType>{});
-            for (std::size_t j = 0; j <= 32; ++j) {
+            for (std::size_t j = 0; j <= gridHeight_; ++j) {
                 auto& row = fieldCells_[i];
                 row.emplace(j, CellType::EMPTY);
             }

@@ -13,20 +13,18 @@ enum class GameStateType: unsigned;
 class GamePlayManager
 {
 public:
-    GamePlayManager(std::unique_ptr<GameFieldFactory> gameFieldFactory/*, std::size_t grid_width, std::size_t grid_height*/):
-        gameFieldFactory_{std::move(gameFieldFactory)}
-        // grid_width_{grid_width}, 
-        // grid_height_{grid_height}
-    {
+    GamePlayManager(std::unique_ptr<GameFieldFactory> gameFieldFactory):
+        gameFieldFactory_{std::move(gameFieldFactory)} {
         gameField_ = gameFieldFactory_->createGameField(stateType_);
     }
-    ~GamePlayManager() {}
+
+    ~GamePlayManager() = default;
 
 public:
     const std::unique_ptr<GameField>& gameField() const { return gameField_; }
 
 public:
-    void ChangeState(GameStateType nextStateType)
+    void ChangeState(const GameStateType nextStateType)
     {
         if (nextStateType == GameStateType::PAUSE_GAME ||
             (stateType_ == GameStateType::PAUSE_GAME && nextStateType != GameStateType::MAIN_MENU))
@@ -58,6 +56,4 @@ private:
     GameStateType stateType_{ GameStateType::NONE };
     std::unique_ptr<GameFieldFactory> gameFieldFactory_;
     std::unique_ptr<GameField> gameField_;
-    // std::size_t grid_width_;
-    // std::size_t grid_height_;
 };

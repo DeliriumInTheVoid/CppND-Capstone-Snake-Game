@@ -21,8 +21,12 @@ template <typename T>//, std::enable_if_t<std::is_enum_v<ScreenEvent>>
 class Screen
 {
 public:
-    Screen() = default;
-    virtual ~Screen() {}
+    Screen(const std::size_t screenWidth, const std::size_t screenHeight) :
+        screenWidth_{ screenWidth }, screenHeight_{ screenHeight }
+    {
+    }
+
+    virtual ~Screen() = default;
 
 public:
     T ScreenEvent() const { return screenEvent_; }
@@ -33,6 +37,8 @@ public:
     virtual void Init() {}
 
 protected:
+    std::size_t screenWidth_;
+    std::size_t screenHeight_;
     T screenEvent_{};
 };
 
@@ -71,8 +77,13 @@ enum class PauseGameEvent : ScreenEvent
 class MainMenuScreen : public Screen<MainMenuEvent>
 {
 public:
-    MainMenuScreen() = default;
-    virtual ~MainMenuScreen() override {}
+    MainMenuScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
+        Screen(screenWidth, screenHeight)
+    {
+    }
+
+    virtual ~MainMenuScreen() override = default;
+
     virtual void Render() override
     {
         screenEvent_ = MainMenuEvent::NONE;
@@ -84,7 +95,7 @@ public:
             ScreenConsts::BUTTON_SIZE.x,
             ScreenConsts::BUTTON_SIZE.y * buttonsQty + vGap * (buttonsQty - 1)
         };
-        const ImVec2 windowPos{ (640 - windowSize.x) * 0.5f, 200 };
+        const ImVec2 windowPos{ (static_cast<float>(screenWidth_) - windowSize.x) * 0.5f, 200 };
         const auto screenSize = ImGui::GetIO().DisplaySize;
 
         ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
@@ -132,7 +143,10 @@ public:
 class SinglePlayerGameScreen : public Screen<SinglePlayerGameEvent>
 {
 public:
-    SinglePlayerGameScreen() = default;
+    SinglePlayerGameScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
+        Screen(screenWidth, screenHeight)
+    {}
+
     virtual ~SinglePlayerGameScreen() override = default;
 
 public:
@@ -171,17 +185,18 @@ public:
         ImGui::Text("%s", scoreText_.c_str());
 
         if (gameOver_) {
-            ImGui::SetCursorPos({(640 - ScreenConsts::BUTTON_WIDTH) / 2, 100 });
+	        const auto sW = static_cast<float>(screenWidth_);
+            ImGui::SetCursorPos({(sW - ScreenConsts::BUTTON_WIDTH) / 2, 100 });
             if (ImGui::Button("Restart Game", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = SinglePlayerGameEvent::RESTART_GAME;
             }
 
-            ImGui::SetCursorPosX((640 - ScreenConsts::BUTTON_WIDTH) / 2);
+            ImGui::SetCursorPosX((sW - ScreenConsts::BUTTON_WIDTH) / 2);
             if (ImGui::Button("Main Menu", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = SinglePlayerGameEvent::MAIN_MENU;
             }
 
-            ImGui::SetCursorPosX((640 - ScreenConsts::BUTTON_WIDTH) / 2);
+            ImGui::SetCursorPosX((sW - ScreenConsts::BUTTON_WIDTH) / 2);
             if (ImGui::Button("Quit", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = SinglePlayerGameEvent::QUIT_GAME;
             }
@@ -199,7 +214,10 @@ private:
 class PvPGameScreen : public Screen<MultiplayerGameEvent>
 {
 public:
-    PvPGameScreen() = default;
+    PvPGameScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
+        Screen(screenWidth, screenHeight)
+    {}
+
     virtual ~PvPGameScreen() override = default;
 
 public:
@@ -236,17 +254,18 @@ public:
         ImGui::Text("%s", scoreTextPlayer2.c_str());
 
         if (winner_ != PlayerId::UNKNOWN) {
-            ImGui::SetCursorPos({ (640 - ScreenConsts::BUTTON_WIDTH) / 2, 100 });
+            const auto sW = static_cast<float>(screenWidth_);
+            ImGui::SetCursorPos({ (sW - ScreenConsts::BUTTON_WIDTH) / 2, 100 });
             if (ImGui::Button("Restart Game", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = MultiplayerGameEvent::RESTART_GAME;
             }
 
-            ImGui::SetCursorPosX((640 - ScreenConsts::BUTTON_WIDTH) / 2);
+            ImGui::SetCursorPosX((sW - ScreenConsts::BUTTON_WIDTH) / 2);
             if (ImGui::Button("Main Menu", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = MultiplayerGameEvent::MAIN_MENU;
             }
 
-            ImGui::SetCursorPosX((640 - ScreenConsts::BUTTON_WIDTH) / 2);
+            ImGui::SetCursorPosX((sW - ScreenConsts::BUTTON_WIDTH) / 2);
             if (ImGui::Button("Quit", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = MultiplayerGameEvent::QUIT_GAME;
             }
@@ -283,8 +302,11 @@ private:
 class PauseGameScreen : public Screen<PauseGameEvent>
 {
 public:
-    PauseGameScreen() = default;
-    virtual ~PauseGameScreen() override {}
+    PauseGameScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
+        Screen(screenWidth, screenHeight)
+    {}
+
+    virtual ~PauseGameScreen() override = default;
 
     virtual void Render() override
     {
@@ -298,23 +320,19 @@ public:
                     ImGuiWindowFlags_NoTitleBar
         );
 
-        float buttonWidth = 300;
-        float centerPosX = (ImGui::GetWindowSize().x - buttonWidth) * 0.5f;
+        //float buttonWidth = 300;
+        //float centerPosX = (ImGui::GetWindowSize().x - buttonWidth) * 0.5f;
         
         // Center text by using SameLine
         //ImGui::Dummy(ImVec2(centerPosX, 0.0f)); // Move cursor to center
 
         //ImGui::SetCursorPosX(centerPosX);
-        if (ImGui::Button("Resume", ImVec2(300, 0))) {
-            // Handle Resume action
-            //nextStateType_ = GameStateType::SINGLE_PLAYER_GAME;
+        if (ImGui::Button("Resume", ImVec2(ScreenConsts::BUTTON_WIDTH , 0))) {
             screenEvent_ = PauseGameEvent::RESUME_GAME;
         }
 
         //ImGui::SetCursorPosX(centerPosX);
-        if (ImGui::Button("Main Menu", ImVec2(300, 0))) {
-            // Handle Main Menu action
-            //nextStateType_ = GameStateType::MAIN_MENU;
+        if (ImGui::Button("Main Menu", ImVec2(ScreenConsts::BUTTON_WIDTH, 0))) {
             screenEvent_ = PauseGameEvent::QUIT_GAME;
         }
 

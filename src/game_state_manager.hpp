@@ -62,7 +62,14 @@ private:
             return;
         }
 
-        if (nextStateType == GameStateType::RESTART_GAME) {
+        if (nextStateType == GameStateType::PAUSE_GAME) {
+            pausedStateType_ = currentStateType_;
+        }
+        else if (nextStateType == GameStateType::RESUME_GAME) {
+            nextStateType = pausedStateType_;
+            pausedStateType_ = GameStateType::NONE;
+        }
+        else if (nextStateType == GameStateType::RESTART_GAME) {
             nextStateType = currentStateType_;
         }
 
@@ -80,6 +87,7 @@ private:
 private:
     std::unique_ptr<GameStateFactory> gameStateFactory_;
     GameStateType currentStateType_;
+    GameStateType pausedStateType_{ GameStateType::NONE };
     std::map<GameStateType, std::unique_ptr<GameStateBase>> gameStates_;
     std::unique_ptr<GamePlayManager> gamePlayManager_;
 };

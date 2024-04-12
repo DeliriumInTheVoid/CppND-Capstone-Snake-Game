@@ -19,12 +19,12 @@ int main(int argc, char* argv[]) {
   constexpr std::size_t kGridHeight{32};
 
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
-  Controller controller;
+  const Controller controller;
 
-  std::unique_ptr<GameFieldFactory> gameFieldFactory = std::make_unique<GameFieldFactory>(kGridWidth, kGridHeight);
-  std::unique_ptr<GamePlayManager> gamePlayManager = std::make_unique<GamePlayManager>(std::move(gameFieldFactory));
-  std::unique_ptr<GameStateFactory> gameStateFactory = std::make_unique<GameStateFactory>(kGridWidth, kGridHeight);
-  std::unique_ptr<GameStateManager> gameStateManager = std::make_unique<GameStateManager>(std::move(gameStateFactory), std::move(gamePlayManager));
+  auto gameFieldFactory = std::make_unique<GameFieldFactory>(kGridWidth, kGridHeight);
+  auto gamePlayManager = std::make_unique<GamePlayManager>(std::move(gameFieldFactory));
+  auto gameStateFactory = std::make_unique<GameStateFactory>(kScreenWidth, kScreenHeight);
+  auto gameStateManager = std::make_unique<GameStateManager>(std::move(gameStateFactory), std::move(gamePlayManager));
 
   Game game(kGridWidth, kGridHeight, std::move(gameStateManager));
   game.Run(controller, renderer, kMsPerFrame);

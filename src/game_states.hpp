@@ -108,7 +108,8 @@ protected:
 class MainMenuState : public GameState<MainMenuScreen>
 {
 public:
-    MainMenuState(): GameState(GameStateType::MAIN_MENU, std::make_unique<MainMenuScreen>())
+    MainMenuState(const std::size_t screenWidth, const std::size_t screenHeight) :
+        GameState(GameStateType::MAIN_MENU, std::make_unique<MainMenuScreen>(screenWidth, screenHeight))
     {}
 
     virtual void Render(SDL_Renderer *sdl_renderer, SDL_Rect& block) override
@@ -140,8 +141,8 @@ public:
 class SinglePlayerGameState : public GameState<SinglePlayerGameScreen>
 {
 public:
-    SinglePlayerGameState(int grid_width, int grid_height) :
-        GameState(GameStateType::SINGLE_PLAYER_GAME, std::make_unique<SinglePlayerGameScreen>())
+    SinglePlayerGameState(const std::size_t screenWidth, const std::size_t screenHeight) :
+        GameState(GameStateType::SINGLE_PLAYER_GAME, std::make_unique<SinglePlayerGameScreen>(screenWidth, screenHeight))
     {}
 
     virtual ~SinglePlayerGameState() override = default;
@@ -156,7 +157,7 @@ public:
         screen_->Score(gamePlayManager_->gameField()->PlayerScore(PlayerId::PLAYER_1));
     }
 
-    virtual void HandleInput(SDL_Keycode keyCode) override {
+    virtual void HandleInput(const SDL_Keycode keyCode) override {
         GameState::HandleInput(keyCode);
         switch (keyCode)
         {
@@ -200,8 +201,8 @@ protected:
 class PvPGameState : public GameState<PvPGameScreen>
 {
 public:
-    PvPGameState(int grid_width, int grid_height) :
-        GameState(GameStateType::PvP_GAME, std::make_unique<PvPGameScreen>())
+    PvPGameState(const std::size_t screenWidth, const std::size_t screenHeight) :
+        GameState(GameStateType::PvP_GAME, std::make_unique<PvPGameScreen>(screenWidth, screenHeight))
     {}
 
 public:
@@ -260,10 +261,11 @@ public:
 class PauseGameState : public GameState<PauseGameScreen>
 {
 public:
-    PauseGameState(): GameState(GameStateType::PAUSE_GAME, std::make_unique<PauseGameScreen>())
+    PauseGameState(const std::size_t screenWidth, const std::size_t screenHeight) :
+        GameState(GameStateType::PAUSE_GAME, std::make_unique<PauseGameScreen>(screenWidth, screenHeight))
     {}
-    virtual ~PauseGameState() override 
-    {}
+
+    virtual ~PauseGameState() override = default;
 
 public:
     virtual void Update() override {
@@ -294,7 +296,8 @@ public:
         switch (keyCode)
         {
             case SDLK_p:
-                nextStateType_ = GameStateType::SINGLE_PLAYER_GAME;
+            case SDLK_ESCAPE:
+                nextStateType_ = GameStateType::RESUME_GAME;
                 break;
         }
     }

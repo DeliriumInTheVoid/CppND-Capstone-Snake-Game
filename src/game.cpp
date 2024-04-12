@@ -13,7 +13,7 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, std::unique_ptr<Game
     //PlaceFood();
 }
 
-void Game::Run(Controller const& controller, Renderer& renderer,
+void Game::Run(Controller const& controller, const Renderer& renderer,
     std::size_t targetFrameDuration) {
     Uint32 titleTimestamp = SDL_GetTicks();
     int frame_count = 0;
@@ -23,9 +23,9 @@ void Game::Run(Controller const& controller, Renderer& renderer,
         const Uint32 frame_start = SDL_GetTicks();
 
         // Input, Update, Render - the main game loop.
-        controller.HandleInput(running, gameStateManager_ /*snake, snake2*/);
+        controller.HandleInput(running, gameStateManager_);
         gameStateManager_->Update();
-        renderer.Render(gameStateManager_/*snake, snake2, food*/);
+        renderer.Render(gameStateManager_);
 
         const Uint32 frame_end = SDL_GetTicks();
 
