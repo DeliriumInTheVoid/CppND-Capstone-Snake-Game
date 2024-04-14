@@ -48,6 +48,7 @@ enum class MainMenuEvent : ScreenEvent
     MAIN_MENU,
     SINGLE_PLAYER_GAME,
     PvP_GAME,
+    PvAI_GAME,
     QUIT_GAME,
 };
 
@@ -124,7 +125,7 @@ public:
 
         //ImGui::SetCursorPosX(centerPosX);
         if (ImGui::Button("Player vs AI", ScreenConsts::BUTTON_SIZE)) {
-
+            screenEvent_ = MainMenuEvent::PvAI_GAME;
         }
 
         //ImGui::SetCursorPosX(centerPosX);
@@ -211,14 +212,14 @@ private:
     std::string scoreText_;
 };
 
-class PvPGameScreen : public Screen<MultiplayerGameEvent>
+class MultiplayerGameScreen : public Screen<MultiplayerGameEvent>
 {
 public:
-    PvPGameScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
+    MultiplayerGameScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
         Screen(screenWidth, screenHeight)
     {}
 
-    virtual ~PvPGameScreen() override = default;
+    virtual ~MultiplayerGameScreen() override = default;
 
 public:
     void Score(const int player1_score, const int player2_score) {

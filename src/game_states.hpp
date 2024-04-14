@@ -14,7 +14,7 @@
 class GameStateBase
 {
 public:
-    GameStateBase(GameStateType stateType): gameStateType_{stateType}
+    GameStateBase(const GameStateType stateType): gameStateType_{stateType}
     {}
     virtual ~GameStateBase() = default;
 
@@ -74,7 +74,7 @@ private:
 template <typename TScreen>
 class GameState: public GameStateBase
 {
-// constructors/destructors
+
 public:
     GameState(const GameStateType stateType, std::unique_ptr<TScreen>&& screen): GameStateBase(stateType), screen_{std::move(screen)}
     {}
@@ -118,22 +118,25 @@ public:
         handleScreenEvent(screen_->ScreenEvent());
     }
 
-    void handleScreenEvent(MainMenuEvent event)
+    void handleScreenEvent(const MainMenuEvent event)
     {
         switch (event)
         {
-            case MainMenuEvent::SINGLE_PLAYER_GAME:
-                nextStateType_ = GameStateType::SINGLE_PLAYER_GAME;
-                break;
-            case MainMenuEvent::PvP_GAME:
-                nextStateType_ = GameStateType::PvP_GAME;
-                break;
-            case MainMenuEvent::QUIT_GAME:
-                nextStateType_ = GameStateType::QUIT_GAME;
-                break;
-            default:
-                nextStateType_ = GameStateType::NONE;
-                break;
+        case MainMenuEvent::SINGLE_PLAYER_GAME:
+            nextStateType_ = GameStateType::SINGLE_PLAYER_GAME;
+            break;
+        case MainMenuEvent::PvP_GAME:
+            nextStateType_ = GameStateType::PvP_GAME;
+            break;
+        case MainMenuEvent::PvAI_GAME:
+            nextStateType_ = GameStateType::PvAI_GAME;
+            break;
+        case MainMenuEvent::QUIT_GAME:
+            nextStateType_ = GameStateType::QUIT_GAME;
+            break;
+        default:
+            nextStateType_ = GameStateType::NONE;
+            break;
         }
     }
 };
@@ -198,11 +201,11 @@ protected:
     }
 };
 
-class PvPGameState : public GameState<PvPGameScreen>
+class MultiplayerGameState : public GameState<MultiplayerGameScreen>
 {
 public:
-    PvPGameState(const std::size_t screenWidth, const std::size_t screenHeight) :
-        GameState(GameStateType::PvP_GAME, std::make_unique<PvPGameScreen>(screenWidth, screenHeight))
+    MultiplayerGameState(const std::size_t screenWidth, const std::size_t screenHeight, const GameStateType stateType) :
+        GameState(stateType, std::make_unique<MultiplayerGameScreen>(screenWidth, screenHeight))
     {}
 
 public:
@@ -281,7 +284,7 @@ public:
     void handleScreenEvent(const PauseGameEvent event) {
         switch (event) {
             case PauseGameEvent::RESUME_GAME:
-                nextStateType_ = GameStateType::SINGLE_PLAYER_GAME;
+                nextStateType_ = GameStateType::RESUME_GAME;
                 break;
             case PauseGameEvent::QUIT_GAME:
                 nextStateType_ = GameStateType::MAIN_MENU;

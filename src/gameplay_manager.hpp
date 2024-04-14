@@ -38,12 +38,12 @@ public:
         stateType_ = nextStateType;
     }
 
-    void HandleInput(SDL_Keycode keyCode) const
+    void HandleInput(const SDL_Keycode keyCode) const
     {
         gameField_->HandleInput(keyCode);
     }
 
-    GameFieldState Update()
+    GameFieldState Update() const
     {
         return gameField_->Update();
     }

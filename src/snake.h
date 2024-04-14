@@ -8,76 +8,70 @@
 
 #include "player_id.hpp"
 #include "cell_type.hpp"
+#include "move_direction.hpp"
 
 
 class Snake {
 public:
-    enum class Direction { kUp, kDown, kLeft, kRight };
+    
 
-    Snake(const std::size_t grid_width, const std::size_t grid_height, PlayerId player_id)
-        : grid_width{ grid_width },
-        grid_height{ grid_height },
-        player_id{ player_id }
+    Snake(const std::size_t gridWidth, const std::size_t gridHeight, PlayerId playerId)
+        : gridWidth_{ gridWidth },
+        gridHeight_{ gridHeight },
+        playerId_{ playerId }
     {
-        if (player_id == PlayerId::PLAYER_1)
+        if (playerId == PlayerId::PLAYER_1)
         {
-            cell_type = CellType::SNAKE_P1;
-            initial_position = { 20.0f, grid_height - 20.0f };
-            input_mapping = {
-                { SDLK_UP, Direction::kUp },
-                { SDLK_DOWN, Direction::kDown },
-                { SDLK_LEFT, Direction::kLeft },
-                { SDLK_RIGHT, Direction::kRight }
-            };
+            cellType_ = CellType::SNAKE_P1;
+            initialPosition_ = { 20.0f, gridHeight - 20.0f };
         }
-        else if (player_id == PlayerId::PLAYER_2)
+        else if (playerId == PlayerId::PLAYER_2)
         {
-            cell_type = CellType::SNAKE_P2;
-            initial_position = { grid_width - 20.0f, grid_height - 20.0f };
-            input_mapping = {
-                { SDLK_w, Direction::kUp },
-                { SDLK_s, Direction::kDown },
-                { SDLK_a, Direction::kLeft },
-                { SDLK_d, Direction::kRight }
-            };
+            cellType_ = CellType::SNAKE_P2;
+            initialPosition_ = { gridWidth - 20.0f, gridHeight - 20.0f };
         }
     }
 
     bool Alive() const { return alive; }
+    int HeadX() const;
+    int HeadY() const;
+    Direction MoveDirection() const;
 
     void Init();
-    void Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> *const field);
+    bool Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field);
 
     bool GotFood(const SDL_Point& food) const;
     void GrowBody();
     void SpeedUp(const float value);
-    void Render(SDL_Renderer* sdl_renderer, SDL_Rect& block);
-    void HandleInput(SDL_Keycode key_code);
+    void Render(SDL_Renderer* sdl_renderer, SDL_Rect& block) const;
+    void MoveTo(const Direction direction);
 
 private:
     void UpdateHead();
     void UpdateBody(
-        SDL_Point& current_head_cell,
-        SDL_Point& prev_head_cell,
+	    const SDL_Point& currentHeadCell,
+	    const SDL_Point& prevHeadCell,
         std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> *const field
     );
 
     bool growing{ false };
     int size{ 1 };
-    std::size_t grid_width;
-    std::size_t grid_height;
+    std::size_t gridWidth_;
+    std::size_t gridHeight_;
 
     std::vector<SDL_Point> body;
     bool alive{ false };
-    float head_x{ 0.0f };
-    float head_y{ 0.0f };
-    float speed{ 0.1f };
-    Direction direction{ Direction::kUp };
+    float headX_{ 0.0f };
+    float headY_{ 0.0f };
 
-    PlayerId player_id;
-    CellType cell_type;
-    SDL_FPoint initial_position;
-    std::unordered_map<SDL_Keycode, Direction> input_mapping;
+private:
+    float speed{ 0.1f };
+    Direction direction_{ Direction::kUp };
+
+private:
+    PlayerId playerId_;
+    CellType cellType_;
+    SDL_FPoint initialPosition_;
 };
 
 #endif

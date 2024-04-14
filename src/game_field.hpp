@@ -108,10 +108,11 @@ public:
             }
 
             if (snake.GotFood(food_)) {
+                fieldCells_[food_.x][food_.y] = CellType::EMPTY;
                 player->AddScore(1);
-                PlaceFood();
                 snake.GrowBody();
-                snake.SpeedUp(0.02f);
+                snake.SpeedUp(0.01f);
+                PlaceFood();
             }
         }
 
@@ -169,10 +170,10 @@ private:
             const int y = randomHeight_(randomEngine_);
             // Check that the location is not occupied by a snake item before placing
             // food.
-            if (fieldCells_[y][x] == CellType::EMPTY) {
+            if (fieldCells_[x][y] == CellType::EMPTY) {
                 food_.x = x;
                 food_.y = y;
-                fieldCells_[y][x] = CellType::FOOD;
+                fieldCells_[x][y] = CellType::FOOD;
                 return;
             }
         }

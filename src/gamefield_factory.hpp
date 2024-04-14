@@ -32,6 +32,14 @@ public:
                 gameField->AddPlayer(std::make_unique<Player>(PlayerId::PLAYER_2, gridWidth_, gridHeight_));
                 return gameField;
             }
+            case GameStateType::PvAI_GAME:
+            {
+                auto gameField = std::make_unique<PlayerGameField>(gridWidth_, gridHeight_);
+                gameField->AddPlayer(std::make_unique<Player>(PlayerId::PLAYER_1, gridWidth_, gridHeight_));
+                gameField->AddPlayer(std::make_unique<PlayerAI>(PlayerId::PLAYER_2, gridWidth_, gridHeight_));
+                return gameField;
+            }
+
             default:
                 return std::make_unique<NullGameField>();
         }

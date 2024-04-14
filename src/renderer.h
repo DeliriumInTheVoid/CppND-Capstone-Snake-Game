@@ -13,8 +13,7 @@ class Renderer {
            const std::size_t grid_width, const std::size_t grid_height);
   ~Renderer();
 
-  //void RenderSnake(Snake const &snake, SDL_Rect &block);
-  void Render(std::unique_ptr<GameStateManager>& stateManager/*Snake const &snake, Snake const &snake2, SDL_Point const &food*/) const;
+  void Render(std::unique_ptr<GameStateManager>& stateManager) const;
   void UpdateWindowTitle(int fps) const;
 
  private:

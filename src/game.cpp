@@ -45,7 +45,7 @@ void Game::Run(Controller const& controller, const Renderer& renderer,
         // smaller than the target ms_per_frame), delay the loop to
         // achieve the correct frame rate.
         if (frame_duration < targetFrameDuration) {
-            SDL_Delay(targetFrameDuration - frame_duration);
+            SDL_Delay(static_cast<Uint32>(targetFrameDuration) - frame_duration);
         }
     }
 }
