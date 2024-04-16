@@ -120,36 +120,40 @@ public:
 protected:
     bool UpdateSnake(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field) override {
 
-        if (aStar_.HasResult() && !path_.empty()) {
-            const auto* cell = path_.size() > 1 ? path_[1] : path_[0];
+        if (aStar_.HasResult()) {
             //field->at(cell->x).at(cell->y) = CellType::MOVE_GOAL;
-            if (cell->x > snake_.HeadX() && snake_.MoveDirection() != Direction::kLeft) {
+            const auto cell = aStar_.GetResult();
+
+            if (!cell.isValid) {
+	            return false;
+            }
+
+            if (cell.x > snake_.HeadX() && snake_.MoveDirection() != Direction::kLeft) {
                 snake_.MoveTo(Direction::kRight);
             }
-            else if (cell->x < snake_.HeadX() && snake_.MoveDirection() != Direction::kRight) {
+            else if (cell.x < snake_.HeadX() && snake_.MoveDirection() != Direction::kRight) {
                 snake_.MoveTo(Direction::kLeft);
             }
-            else if (cell->y > snake_.HeadY() && snake_.MoveDirection() != Direction::kUp) {
+            else if (cell.y > snake_.HeadY() && snake_.MoveDirection() != Direction::kUp) {
                 snake_.MoveTo(Direction::kDown);
             }
-            else if (cell->y < snake_.HeadY() && snake_.MoveDirection() != Direction::kDown) {
+            else if (cell.y < snake_.HeadY() && snake_.MoveDirection() != Direction::kDown) {
                 snake_.MoveTo(Direction::kUp);
             }
-            path_.clear();
         }
 
         if (!Player::UpdateSnake(field)) {
             return false;
         }
 
-        if (aStar_.ReadyToStart()) {
-            aStar_.findPathAsync(snake_.HeadX(), snake_.HeadY(), CellType::FOOD, field, path_);
+        if (aStar_.ReadyToSearch()) {
+            aStar_.findPathAsync(snake_.HeadX(), snake_.HeadY(), CellType::FOOD, field);
         }
 
         return true;
     }
 
 private:
-    std::vector<Cell*> path_{};
+    ResultCell nextMoveCell{};
     AStartAsync aStar_;
 };

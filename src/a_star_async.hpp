@@ -4,10 +4,17 @@
 #include <vector>
 #include <queue>
 #include <cmath>
-#include <algorithm>
 #include <functional>
 #include <future>
 #include <set>
+
+struct ResultCell
+{
+    ResultCell() = default;
+    ResultCell(int x, int y, bool isValid) : x(x), y(y), isValid(isValid) {}
+    int x{}, y{};
+    bool isValid{};
+};
 
 
 struct Cell {
@@ -58,8 +65,7 @@ public:
     AStartAsync& operator=(AStartAsync&& other) = delete;
 
     void findPathAsync(int startX, int startY, const CellType goalCellType, 
-        const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field,
-        std::vector<Cell*>& path) {
+        const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field) {
 
         auto* startPt = grid_[startX][startY];
 
@@ -78,11 +84,11 @@ public:
         }
 
         if (goalCell) {
-            future_ = std::async(std::launch::async, &AStartAsync::aStarSearch, this, startPt, goalCell, std::ref(path));
+            future_ = std::async(std::launch::async, &AStartAsync::aStarSearch, this, startPt, goalCell);
         }
     }
 
-    bool ReadyToStart() const {
+    bool ReadyToSearch() const {
 
         const bool valid = future_.valid();
         if (!valid) {
@@ -97,9 +103,13 @@ public:
         return future_.valid() && future_.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
     }
 
+    ResultCell GetResult() {
+        return future_.get();
+    }
+
 private:
 
-    void aStarSearch(Cell* const start, const Cell* const goal, std::vector<Cell*>& path) const {
+    ResultCell aStarSearch(Cell* const start, const Cell* const goal) const {
         std::priority_queue<Cell*, std::vector<Cell*>, std::function<bool(Cell*, Cell*)>> open(
             [](const Cell* a, const Cell* b) {
                 return a->f > b->f;
@@ -113,6 +123,8 @@ private:
         open.push(start);
         visitedCells.insert(start);
 
+        std::vector<Cell*> path{};
+
         while (!open.empty()) {
             Cell* current = open.top();
             open.pop();
@@ -124,8 +136,13 @@ private:
                     if (current == goal)
                         break;
                 }
-                std::reverse(path.begin(), path.end());
-                return;
+
+                if (path.size() > 1) {
+                    path.pop_back();
+                }
+                auto* cell = path.back();
+
+                return {cell->x, cell->y, true};
             }
 
             for (int dx = -1; dx <= 1; dx++) {
@@ -161,11 +178,13 @@ private:
                 }
             }
         }
+
+        return {};
     }
 
 private:
     std::vector<std::vector<Cell*>> grid_{};
-    std::future<void> future_{};
+    std::future<ResultCell> future_{};
     std::size_t gridHeight_;
     std::size_t gridWidth_;
 };
