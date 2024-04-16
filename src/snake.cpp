@@ -18,8 +18,6 @@ void Snake::Init() {
     alive = true;
     size = 1;
     speed = 0.1f;
-    //head_x = grid_width / 2;
-    //head_y = grid_height / 2;
     headX_ = initialPosition_.x;
     headY_ = initialPosition_.y;
     body.clear();

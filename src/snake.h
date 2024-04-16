@@ -13,8 +13,6 @@
 
 class Snake {
 public:
-    
-
     Snake(const std::size_t gridWidth, const std::size_t gridHeight, PlayerId playerId)
         : gridWidth_{ gridWidth },
         gridHeight_{ gridHeight },
@@ -23,12 +21,15 @@ public:
         if (playerId == PlayerId::PLAYER_1)
         {
             cellType_ = CellType::SNAKE_P1;
-            initialPosition_ = { 20.0f, gridHeight - 20.0f };
+            initialPosition_ = { 5.0f, static_cast<float>(gridHeight) - 5.0f };
         }
         else if (playerId == PlayerId::PLAYER_2)
         {
             cellType_ = CellType::SNAKE_P2;
-            initialPosition_ = { gridWidth - 20.0f, gridHeight - 20.0f };
+            initialPosition_ = {
+                static_cast<float>(gridWidth) - 5.0f,
+                static_cast<float>(gridHeight) - 5.0f
+            };
         }
     }
 
@@ -49,8 +50,8 @@ public:
 private:
     void UpdateHead();
     void UpdateBody(
-	    const SDL_Point& currentHeadCell,
-	    const SDL_Point& prevHeadCell,
+        const SDL_Point& currentHeadCell,
+        const SDL_Point& prevHeadCell,
         std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> *const field
     );
 
