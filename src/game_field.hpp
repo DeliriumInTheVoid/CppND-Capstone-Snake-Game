@@ -26,7 +26,7 @@ public:
 
     virtual int PlayerScore(PlayerId player_id) const = 0;
 
-    virtual PlayerId Winner() const { return PlayerId::UNKNOWN; }
+    virtual Winner GetWinner() const { return {}; }
 
 public:
     GameFieldState GameState() const { return gameFieldState_; }
@@ -72,7 +72,7 @@ public:
         randomHeight_(0, static_cast<int>(gridHeight - 1))
     {}
 
-    ~PlayerGameField() = default;
+    ~PlayerGameField() override = default;
 public:
     void Init() override {
         for (const auto& [id, player] : players_) {
@@ -99,7 +99,7 @@ public:
         }
 
         for (const auto& [id, player] : players_) {
-            player->Update(&fieldCells_);
+            player->Update(fieldCells_);
             Snake& snake = player->GetSnake();
 
             if (!snake.Alive()) {
@@ -142,23 +142,21 @@ public:
         return players_.find(player_id)->second->Score();
     }
 
-    virtual PlayerId Winner() const override {
-        PlayerId winner{ PlayerId::UNKNOWN };
+    virtual Winner GetWinner() const override {
 
         if (gameFieldState_ != GameFieldState::GAME_OVER) {
-            return winner;
+            return {};
         }
 
         for (const auto& [id, player] : players_) {
             Snake& snake = player->GetSnake();
 
             if (snake.Alive()) {
-                winner = player->Id();
-                break;
+                return { player->Id(), player->Name(), player->Score() };
             }
         }
 
-        return winner;
+        return {};
     }
 
 private:
@@ -180,9 +178,7 @@ private:
     }
 
 private:
-    //Snake snake;
     SDL_Point food_{};
-    //int score;
     std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> fieldCells_{};
 
     std::random_device randomDev_;

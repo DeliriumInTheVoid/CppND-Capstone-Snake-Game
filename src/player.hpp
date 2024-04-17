@@ -7,6 +7,19 @@
 #include "a_star_async.hpp"
 
 
+struct Winner {
+    Winner() : Winner(PlayerId::UNKNOWN, "NoName", 0)
+    {}
+
+    Winner(const PlayerId id, const std::string_view name, const int score) :
+        id(id), name{ name }, score(score)
+    {}
+
+    PlayerId id;
+    std::string_view name;
+    int score;
+};
+
 class Player
 {
 public:
@@ -20,6 +33,7 @@ public:
                 {SDLK_LEFT, Direction::kLeft},
                 {SDLK_RIGHT, Direction::kRight}
             };
+            name_ = "Player 1";
         }
         else if (id == PlayerId::PLAYER_2)
         {
@@ -29,6 +43,7 @@ public:
                 { SDLK_a, Direction::kLeft },
                 { SDLK_d, Direction::kRight }
             };
+            name_ = "Player 2";
         }
     }
 
@@ -44,7 +59,7 @@ public:
         score_ = 0;
     }
 
-    void Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> *const field) {
+    void Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field) {
         if (!snake_.Alive()) {
             return;
         }
@@ -68,14 +83,16 @@ public:
 
     int Score() const { return score_; }
     PlayerId Id() const { return id_; }
+    std::string_view Name() const { return name_; }
     Snake& GetSnake() { return snake_; }
 
 protected:
-    virtual bool UpdateSnake(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field) {
+    virtual bool UpdateSnake(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field) {
         return snake_.Update(field);
     }
 
 protected:
+    std::string_view name_;
     std::unordered_map<SDL_Keycode, Direction> inputMapping_;
     Snake snake_;
     std::size_t gridHeight_;
@@ -94,6 +111,7 @@ public:
     PlayerAI(const PlayerId id, const std::size_t gridWidth, const std::size_t gridHeight) :
         Player{ id, gridWidth, gridHeight }, aStar_{ gridWidth, gridHeight }
     {
+        name_ = "AI Player";
     }
 
     virtual ~PlayerAI() override = default;
@@ -118,7 +136,7 @@ public:
     }
 
 protected:
-    bool UpdateSnake(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field) override {
+    bool UpdateSnake(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field) override {
 
         if (aStar_.HasResult()) {
             //field->at(cell->x).at(cell->y) = CellType::MOVE_GOAL;

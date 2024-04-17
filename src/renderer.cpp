@@ -23,7 +23,6 @@ Renderer::Renderer(const std::size_t screen_width,
         std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
     }
 
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
     sdl_window = SDL_CreateWindow("Snake Game", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, static_cast<int>(screen_width),
         static_cast<int>(screen_height), SDL_WINDOW_SHOWN);
@@ -46,6 +45,7 @@ Renderer::Renderer(const std::size_t screen_width,
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.Fonts->AddFontDefault();
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -79,9 +79,6 @@ void Renderer::Render(std::unique_ptr<GameStateManager>& stateManager) const
     block.h = static_cast<int>(screen_height / grid_height);
 
     stateManager->Render(sdl_renderer, block);
-
-    // Render food
-    //SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
 
     // Imgui Rendering
     ImGui::Render();

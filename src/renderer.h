@@ -1,7 +1,6 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <vector>
 #include <memory>
 
 //#include "snake.h"

@@ -20,6 +20,8 @@ find_package(imgui CONFIG REQUIRED)
 add_executable (SnakeGame ${SOURCES})
 #string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 #target_link_libraries(SnakeGame ${SDL2_LIBRARIES})
 target_link_libraries(SnakeGame
     PRIVATE

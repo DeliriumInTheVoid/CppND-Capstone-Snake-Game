@@ -1,17 +1,10 @@
-#include <iostream>
 #include "SDL.h"
 #include "game.h"
 
 
-Game::Game(std::size_t grid_width, std::size_t grid_height, std::unique_ptr<GameStateManager>&& game_state_manager)
-    : //snake(grid_width, grid_height), snake2(grid_width, grid_height),
-      // engine(dev()),
-      // random_w(0, static_cast<int>(grid_width - 1)),
-      // random_h(0, static_cast<int>(grid_height - 1)),
-    gameStateManager_(std::move(game_state_manager))
-{
-    //PlaceFood();
-}
+Game::Game(std::unique_ptr<GameStateManager>&& gameStateManager)
+    : gameStateManager_(std::move(gameStateManager))
+{}
 
 void Game::Run(Controller const& controller, const Renderer& renderer,
     std::size_t targetFrameDuration) {

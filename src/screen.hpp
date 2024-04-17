@@ -37,6 +37,47 @@ public:
     virtual void Init() {}
 
 protected:
+    void ShowScoreResult(const int score) const {
+        const auto font = ImGui::GetIO().Fonts->Fonts[0];
+
+        if (score > bestScore_ && bestScore_ > 0) {
+            font->Scale *= 5.0f;
+            ImGui::PushFont(font);
+            ImGui::SetCursorPosX(
+                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Congratulations!").x) * 0.5f
+            );
+            ImGui::Text("Congratulations!");
+            ImGui::PopFont();
+            font->Scale /= 5.0f;
+
+            font->Scale *= 4.0f;
+            ImGui::PushFont(font);
+            ImGui::SetCursorPosX(
+                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("A New Record: %d").x) * 0.5f
+            );
+            ImGui::Text("A New Record: %d", score);
+            ImGui::SetCursorPosX(
+                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Previous: %d").x) * 0.5f
+            );
+            ImGui::Text("Previous: %d", bestScore_);
+            ImGui::PopFont();
+            font->Scale /= 4.0f;
+
+        }
+        else {
+            font->Scale *= 6.0f;
+            ImGui::PushFont(font);
+            ImGui::SetCursorPosX(
+                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Score: %d").x) * 0.5f
+            );
+            ImGui::Text("Score: %d", score);
+            ImGui::PopFont();
+            font->Scale /= 6.0f;
+        }
+    }
+
+protected:
+    int bestScore_{};
     std::size_t screenWidth_;
     std::size_t screenHeight_;
     T screenEvent_{};
@@ -164,8 +205,9 @@ public:
         gameOver_ = false;
     }
 
-    void GameOver(){
+    void GameOver(const int bestScore){
         gameOver_ = true;
+        bestScore_ = bestScore;
     }
 
     virtual void Render() override
@@ -186,7 +228,7 @@ public:
         ImGui::Text("%s", scoreText_.c_str());
 
         if (gameOver_) {
-	        const auto sW = static_cast<float>(screenWidth_);
+            const auto sW = static_cast<float>(screenWidth_);
             ImGui::SetCursorPos({(sW - ScreenConsts::BUTTON_WIDTH) / 2, 100 });
             if (ImGui::Button("Restart Game", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = SinglePlayerGameEvent::RESTART_GAME;
@@ -201,6 +243,21 @@ public:
             if (ImGui::Button("Quit", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = SinglePlayerGameEvent::QUIT_GAME;
             }
+
+            const auto font = ImGui::GetIO().Fonts->Fonts[0];
+            //auto const fontSize = font->FontSize;
+            //font->FontSize = 28;
+            font->Scale *= 8.0f;
+            ImGui::PushFont(font);
+            ImGui::SetCursorPosX(
+                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Game Over").x) * 0.5f
+            );
+            ImGui::Text("Game Over");
+            ImGui::PopFont();
+            //font->FontSize = fontSize;
+            font->Scale /= 8.0f;
+
+            ShowScoreResult(score_);
         }
 
         ImGui::End();
@@ -228,7 +285,7 @@ public:
     }
 
     void Init() override {
-        winner_ = PlayerId::UNKNOWN;
+        winner_ = {};
         screenEvent_ = MultiplayerGameEvent::NONE;
         Score(0, 0);
     }
@@ -254,7 +311,7 @@ public:
         ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x - ImGui::CalcTextSize(scoreTextPlayer2.c_str()).x - 10, 10));
         ImGui::Text("%s", scoreTextPlayer2.c_str());
 
-        if (winner_ != PlayerId::UNKNOWN) {
+        if (winner_.id != PlayerId::UNKNOWN) {
             const auto sW = static_cast<float>(screenWidth_);
             ImGui::SetCursorPos({ (sW - ScreenConsts::BUTTON_WIDTH) / 2, 100 });
             if (ImGui::Button("Restart Game", ScreenConsts::BUTTON_SIZE)) {
@@ -270,13 +327,29 @@ public:
             if (ImGui::Button("Quit", ScreenConsts::BUTTON_SIZE)) {
                 screenEvent_ = MultiplayerGameEvent::QUIT_GAME;
             }
+
+            const auto font = ImGui::GetIO().Fonts->Fonts[0];
+
+            const auto winnerText = std::string{ winner_.name } + " Wins!";
+
+            font->Scale *= 6.0f;
+            ImGui::PushFont(font);
+            ImGui::SetCursorPosX(
+                (ImGui::GetWindowSize().x - ImGui::CalcTextSize(winnerText.c_str()).x) * 0.5f
+            );
+            ImGui::Text(winnerText.c_str());
+            ImGui::PopFont();
+            font->Scale /= 6.0f;
+
+            ShowScoreResult(winner_.score);
         }
 
         ImGui::End();
     }
 
-    void Winner(const PlayerId player) {
-        winner_ = player;
+    void SetWinner(const Winner& winner, const int bestScore) {
+        winner_ = winner;
+        bestScore_ = bestScore;
     }
 
 private:
@@ -297,7 +370,7 @@ private:
     int scorePlayer2{ -1 };
     std::string scoreTextPlayer2;
 
-    PlayerId winner_{ PlayerId::UNKNOWN };
+    Winner winner_{};
 };
 
 class PauseGameScreen : public Screen<PauseGameEvent>
@@ -312,7 +385,7 @@ public:
     virtual void Render() override
     {
         screenEvent_ = PauseGameEvent::NONE;
-        // Create the game menu
+
         ImGui::Begin("Game Menu", nullptr,
                     ImGuiWindowFlags_NoCollapse | 
                     ImGuiWindowFlags_NoResize | 
@@ -321,18 +394,10 @@ public:
                     ImGuiWindowFlags_NoTitleBar
         );
 
-        //float buttonWidth = 300;
-        //float centerPosX = (ImGui::GetWindowSize().x - buttonWidth) * 0.5f;
-        
-        // Center text by using SameLine
-        //ImGui::Dummy(ImVec2(centerPosX, 0.0f)); // Move cursor to center
-
-        //ImGui::SetCursorPosX(centerPosX);
         if (ImGui::Button("Resume", ImVec2(ScreenConsts::BUTTON_WIDTH , 0))) {
             screenEvent_ = PauseGameEvent::RESUME_GAME;
         }
 
-        //ImGui::SetCursorPosX(centerPosX);
         if (ImGui::Button("Main Menu", ImVec2(ScreenConsts::BUTTON_WIDTH, 0))) {
             screenEvent_ = PauseGameEvent::QUIT_GAME;
         }

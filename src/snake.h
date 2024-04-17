@@ -15,8 +15,7 @@ class Snake {
 public:
     Snake(const std::size_t gridWidth, const std::size_t gridHeight, PlayerId playerId)
         : gridWidth_{ gridWidth },
-        gridHeight_{ gridHeight },
-        playerId_{ playerId }
+        gridHeight_{ gridHeight }
     {
         if (playerId == PlayerId::PLAYER_1)
         {
@@ -39,7 +38,7 @@ public:
     Direction MoveDirection() const;
 
     void Init();
-    bool Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field);
+    bool Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field);
 
     bool GotFood(const SDL_Point& food) const;
     void GrowBody();
@@ -52,7 +51,7 @@ private:
     void UpdateBody(
         const SDL_Point& currentHeadCell,
         const SDL_Point& prevHeadCell,
-        std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> *const field
+        std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field
     );
 
     bool growing{ false };
@@ -70,7 +69,6 @@ private:
     Direction direction_{ Direction::kUp };
 
 private:
-    PlayerId playerId_;
     CellType cellType_;
     SDL_FPoint initialPosition_;
 };

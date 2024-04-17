@@ -2,8 +2,6 @@
 #define CONTROLLER_H
 
 #include <memory>
-
-#include "snake.h"
 #include "game_state_manager.hpp"
 
 class Controller {

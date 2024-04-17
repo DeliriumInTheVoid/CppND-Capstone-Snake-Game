@@ -8,7 +8,7 @@
 class GameFieldFactory
 {
 public:
-    GameFieldFactory(std::size_t gridWidth, std::size_t gridHeight)
+    GameFieldFactory(const std::size_t gridWidth, const std::size_t gridHeight)
         : gridWidth_{gridWidth}
         , gridHeight_{gridHeight}
     {}
@@ -16,7 +16,7 @@ public:
     ~GameFieldFactory() = default;
 
 public:
-    std::unique_ptr<GameField> createGameField(GameStateType type) {
+    std::unique_ptr<GameField> createGameField(const GameStateType type) {
         switch (type)
         {
             case GameStateType::SINGLE_PLAYER_GAME:
@@ -39,7 +39,6 @@ public:
                 gameField->AddPlayer(std::make_unique<PlayerAI>(PlayerId::PLAYER_2, gridWidth_, gridHeight_));
                 return gameField;
             }
-
             default:
                 return std::make_unique<NullGameField>();
         }

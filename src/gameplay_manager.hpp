@@ -13,7 +13,7 @@ enum class GameStateType: unsigned;
 class GamePlayManager
 {
 public:
-    GamePlayManager(std::unique_ptr<GameFieldFactory> gameFieldFactory):
+    GamePlayManager(std::unique_ptr<GameFieldFactory>&& gameFieldFactory):
         gameFieldFactory_{std::move(gameFieldFactory)} {
         gameField_ = gameFieldFactory_->createGameField(stateType_);
     }
@@ -24,8 +24,7 @@ public:
     const std::unique_ptr<GameField>& gameField() const { return gameField_; }
 
 public:
-    void ChangeState(const GameStateType nextStateType)
-    {
+    void ChangeState(const GameStateType nextStateType) {
         if (nextStateType == GameStateType::PAUSE_GAME ||
             (stateType_ == GameStateType::PAUSE_GAME && nextStateType != GameStateType::MAIN_MENU))
         {
@@ -38,18 +37,15 @@ public:
         stateType_ = nextStateType;
     }
 
-    void HandleInput(const SDL_Keycode keyCode) const
-    {
+    void HandleInput(const SDL_Keycode keyCode) const {
         gameField_->HandleInput(keyCode);
     }
 
-    GameFieldState Update() const
-    {
+    GameFieldState Update() const {
         return gameField_->Update();
     }
 
-    void Render(SDL_Renderer *sdl_renderer, SDL_Rect& block) const
-    {
+    void Render(SDL_Renderer *sdl_renderer, SDL_Rect& block) const {
         gameField_->Render(sdl_renderer, block);
     }
 private:

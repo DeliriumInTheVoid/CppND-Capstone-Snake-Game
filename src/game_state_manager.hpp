@@ -10,13 +10,18 @@
 class GameStateManager
 {
 public:
-    GameStateManager(std::unique_ptr<GameStateFactory> gameStateFactory, std::unique_ptr<GamePlayManager> gamePlayManager)
+    GameStateManager(std::unique_ptr<GameStateFactory> gameStateFactory,
+        std::unique_ptr<GamePlayManager>&& gamePlayManager,
+        std::unique_ptr<GameSaveData>&& gameSaveData
+    )
         : gameStateFactory_{std::move(gameStateFactory)},
-          currentStateType_{GameStateType::NONE},
-          gamePlayManager_{std::move(gamePlayManager)} {
+          currentStateType_{GameStateType::NONE} {
+
         gameStates_[GameStateType::MAIN_MENU] = gameStateFactory_->CreateGameState(GameStateType::MAIN_MENU);
         const auto& currentState = gameStates_[GameStateType::MAIN_MENU];
-        currentState->MoveGamePlayManager(std::move(gamePlayManager_));
+        currentState->MoveGamePlayManager(std::move(gamePlayManager));
+        gameSaveData->PreloadData();
+        currentState->MoveGameSaveData(std::move(gameSaveData));
         currentState->Init();
         currentStateType_ = GameStateType::MAIN_MENU;
     }
@@ -80,6 +85,11 @@ private:
         gameStates_[nextStateType]->MoveGamePlayManager(
             std::move(gameStates_[currentStateType_]->MoveGamePlayManager())
         );
+
+        gameStates_[nextStateType]->MoveGameSaveData(
+            std::move(gameStates_[currentStateType_]->MoveGameSaveData())
+        );
+
         currentStateType_ = nextStateType;
         gameStates_[currentStateType_]->Init();
     }
@@ -89,5 +99,4 @@ private:
     GameStateType currentStateType_;
     GameStateType pausedStateType_{ GameStateType::NONE };
     std::map<GameStateType, std::unique_ptr<GameStateBase>> gameStates_;
-    std::unique_ptr<GamePlayManager> gamePlayManager_;
 };

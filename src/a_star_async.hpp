@@ -11,7 +11,9 @@
 struct ResultCell
 {
     ResultCell() = default;
-    ResultCell(int x, int y, bool isValid) : x(x), y(y), isValid(isValid) {}
+    ResultCell(const int x, const int y, const bool isValid) :
+        x(x), y(y), isValid(isValid) {}
+
     int x{}, y{};
     bool isValid{};
 };
@@ -65,14 +67,14 @@ public:
     AStartAsync& operator=(AStartAsync&& other) = delete;
 
     void findPathAsync(int startX, int startY, const CellType goalCellType, 
-        const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field) {
+        const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field) {
 
         auto* startPt = grid_[startX][startY];
 
         const Cell* goalCell{};
         for (std::size_t i = 0; i <= gridWidth_; ++i) {
             for (std::size_t j = 0; j <= gridHeight_; ++j) {
-                const auto& cell = field->at(i).at(j);
+                const auto& cell = field.at(i).at(j);
 
                 grid_[i][j]->type = cell;
                 grid_[i][j]->parent = nullptr;

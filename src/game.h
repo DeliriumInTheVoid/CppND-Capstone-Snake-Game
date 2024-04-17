@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include <memory>
-#include <random>
 
 #include "controller.h"
 #include "renderer.h"
@@ -11,7 +10,8 @@
 class Game
 {
 public:
-  Game(std::size_t grid_width, std::size_t grid_height, std::unique_ptr<GameStateManager>&& game_state_manager);
+  Game(std::unique_ptr<GameStateManager>&& gameStateManager);
+
   void Run(Controller const &controller, const Renderer &renderer,
            std::size_t targetFrameDuration);
 

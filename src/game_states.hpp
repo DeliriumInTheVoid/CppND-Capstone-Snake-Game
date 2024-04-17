@@ -7,8 +7,8 @@
 #include "game_state_type.hpp"
 #include "gameplay_manager.hpp"
 #include "screen.hpp"
-#include "snake.h"
 #include "game_field_state.hpp"
+#include "game_save_data.hpp"
 
 
 class GameStateBase
@@ -36,6 +36,14 @@ public:
         return std::move(gamePlayManager_);
     }
 
+    void MoveGameSaveData(std::unique_ptr<GameSaveData>&& data) {
+        gameSaveData_ = std::move(data);
+    }
+
+    std::unique_ptr<GameSaveData>&& MoveGameSaveData() {
+        return std::move(gameSaveData_);
+    }
+
     virtual void Update()
     {
         nextStateType_ = GameStateType::NONE;
@@ -60,7 +68,8 @@ public:
     }
 
 protected:
-    std::unique_ptr<GamePlayManager> gamePlayManager_;
+    std::unique_ptr<GameSaveData> gameSaveData_{};
+    std::unique_ptr<GamePlayManager> gamePlayManager_{};
     GameStateType nextStateType_{ GameStateType::NONE };
 
 protected:
@@ -196,7 +205,14 @@ public:
 protected:
     void HandleGameFieldStateChange(const GameFieldState state) override {
         if (state == GameFieldState::GAME_OVER) {
-            screen_->GameOver();
+            auto const bestScore = gameSaveData_->GetBestScore(StateType());
+
+            screen_->GameOver(bestScore);
+
+            auto const currentScore = gamePlayManager_->gameField()->PlayerScore(PlayerId::PLAYER_1);
+            if (currentScore > bestScore) {
+                gameSaveData_->SetBestScore(StateType(), currentScore);
+            }
         }
     }
 };
@@ -256,7 +272,14 @@ public:
 
     void HandleGameFieldStateChange(const GameFieldState state) override {
         if (state == GameFieldState::GAME_OVER) {
-            screen_->Winner(gamePlayManager_->gameField()->Winner());
+            auto const bestScore = gameSaveData_->GetBestScore(StateType());
+
+            const auto& winner = gamePlayManager_->gameField()->GetWinner();
+            screen_->SetWinner(winner, bestScore);
+
+            if (winner.score > bestScore) {
+                gameSaveData_->SetBestScore(StateType(), winner.score);
+            }
         }
     }
 };

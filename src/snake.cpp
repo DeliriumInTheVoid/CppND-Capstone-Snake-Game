@@ -24,7 +24,7 @@ void Snake::Init() {
     direction_ = Direction::kUp;
 }
 
-bool Snake::Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>* const field) {
+bool Snake::Update(std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field) {
 
     if (!alive) {
         return false;
@@ -86,13 +86,13 @@ void Snake::UpdateHead() {
 }
 
 void Snake::UpdateBody(const SDL_Point& currentHeadCell, const SDL_Point& prevHeadCell,
-                       std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>> *const field) {
+                       std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field) {
     // Add previous head location to vector
     body.push_back(prevHeadCell);
 
     if (!growing) {
         const auto& tail = body[0];
-        field->at(tail.x).at(tail.y) = CellType::EMPTY;
+        field.at(tail.x).at(tail.y) = CellType::EMPTY;
         // Remove the tail from the vector.
         body.erase(body.begin());
     }
@@ -103,15 +103,15 @@ void Snake::UpdateBody(const SDL_Point& currentHeadCell, const SDL_Point& prevHe
 
     // Check if the snake has died.
     for (auto const& item : body) {
-        field->at(item.x).at(item.y) = cellType_;
+        field.at(item.x).at(item.y) = cellType_;
     }
 
-    if (const auto cell_for_head = field->at(currentHeadCell.x).at(currentHeadCell.y);
+    if (const auto cell_for_head = field.at(currentHeadCell.x).at(currentHeadCell.y);
         cell_for_head == CellType::SNAKE_P1 || cell_for_head == CellType::SNAKE_P2) {
         alive = false;
     }
     else {
-        field->at(currentHeadCell.x).at(currentHeadCell.y) = cellType_;
+        field.at(currentHeadCell.x).at(currentHeadCell.y) = cellType_;
     }
 }
 
