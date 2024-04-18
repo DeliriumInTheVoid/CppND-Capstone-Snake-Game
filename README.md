@@ -1,3 +1,39 @@
+# Submission overview
+
+All libraries install with vcpkg. The project uses the following libraries:
+- SDL2
+- ImGui
+- nlohmann json
+
+Game has the three modes:
+
+* Single player
+* Player vs Player
+* Player vs AI Player
+
+### Single player
+Control the snake with the arrow keys. The snake will grow when it eats the food. The game ends when the snake collides with itself.
+
+### Player vs Player
+Control the first snake with the arrow keys and the second snake with the WASD keys. The snakes will grow when they eat the food. The game ends when one of the snakes collides with itself or the other snake.
+
+### Player vs AI Player
+Control the snake with the arrow keys. The snake will grow when it eats the food. The game ends when the snake collides with itself or the AI snake.
+
+If snake collides with the other snake, the game will end and despite the score of the collides snake it will lose.
+
+### Controls
+- Arrow keys: Move the snake (all game modes)
+- WASD keys: Move the second snake (PvP game mode)
+- P, Esc: Pause the game (all game modes)
+
+### New features
+- Added the new game modes
+- Added the AI player
+- Added the UI
+- Added the best score save/load for all game modes
+
+
 # CPPND: Capstone Snake Game Example
 
 This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
