@@ -1,10 +1,20 @@
 # Submission overview
 
+## Udacity workspace build
+```
+make init_env
+make build_debug
+
+./build/SnakeGame
+```
+
+## Dependencies 
 All libraries install with vcpkg. The project uses the following libraries:
 - SDL2
 - ImGui
 - nlohmann json
 
+## Snake Game
 Game has the three modes:
 
 * Single player

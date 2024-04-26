@@ -1,0 +1,15 @@
+diff --git a/build-aux/m4/zw_simple_warnings.m4 b/build-aux/m4/zw_simple_warnings.m4
+index fef1312..74a8dc1 100644
+--- a/build-aux/m4/zw_simple_warnings.m4
++++ b/build-aux/m4/zw_simple_warnings.m4
+@@ -81,7 +81,6 @@ AC_ARG_ENABLE(
+         -Wpointer-arith dnl
+         -Wrestrict dnl
+         -Wshadow dnl
+-        -Wstrict-overflow=2 dnl
+         -Wstrict-prototypes dnl
+         -Wundef dnl
+         -Wvla dnl
+diff --git a/some.patch b/some.patch
+new file mode 100644
+index 0000000..e69de29
