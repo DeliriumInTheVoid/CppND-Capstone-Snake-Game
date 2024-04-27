@@ -20,15 +20,11 @@ template <typename T>
 class Screen
 {
 public:
-    Screen(const std::size_t screenWidth, const std::size_t screenHeight) :
-        screenWidth_{ screenWidth }, screenHeight_{ screenHeight }
-    {
-    }
-
+    Screen(const std::size_t screenWidth, const std::size_t screenHeight);
     virtual ~Screen() = default;
 
 public:
-    T ScreenEvent() const { return screenEvent_; }
+    T ScreenEvent() const;
 
 public:
     virtual void Render() = 0;
@@ -36,44 +32,7 @@ public:
     virtual void Init() {}
 
 protected:
-    void ShowScoreResult(const int score) const {
-        const auto font = ImGui::GetIO().Fonts->Fonts[0];
-
-        if (score > bestScore_ && bestScore_ > 0) {
-            font->Scale *= 5.0f;
-            ImGui::PushFont(font);
-            ImGui::SetCursorPosX(
-                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Congratulations!").x) * 0.5f
-            );
-            ImGui::Text("Congratulations!");
-            ImGui::PopFont();
-            font->Scale /= 5.0f;
-
-            font->Scale *= 4.0f;
-            ImGui::PushFont(font);
-            ImGui::SetCursorPosX(
-                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("A New Record: %d").x) * 0.5f
-            );
-            ImGui::Text("A New Record: %d", score);
-            ImGui::SetCursorPosX(
-                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Previous: %d").x) * 0.5f
-            );
-            ImGui::Text("Previous: %d", bestScore_);
-            ImGui::PopFont();
-            font->Scale /= 4.0f;
-
-        }
-        else {
-            font->Scale *= 6.0f;
-            ImGui::PushFont(font);
-            ImGui::SetCursorPosX(
-                (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Score: %d").x) * 0.5f
-            );
-            ImGui::Text("Score: %d", score);
-            ImGui::PopFont();
-            font->Scale /= 6.0f;
-        }
-    }
+    void ShowScoreResult(const int score) const;
 
 protected:
     int bestScore_{};
@@ -81,3 +40,53 @@ protected:
     std::size_t screenHeight_;
     T screenEvent_{};
 };
+
+template <typename T>
+Screen<T>::Screen(const std::size_t screenWidth, const std::size_t screenHeight):
+    screenWidth_{ screenWidth }, screenHeight_{ screenHeight }
+{
+}
+
+template <typename T>
+T Screen<T>::ScreenEvent() const
+{ return screenEvent_; }
+
+template <typename T>
+void Screen<T>::ShowScoreResult(const int score) const {
+    const auto font = ImGui::GetIO().Fonts->Fonts[0];
+
+    if (score > bestScore_ && bestScore_ > 0) {
+        font->Scale *= 5.0f;
+        ImGui::PushFont(font);
+        ImGui::SetCursorPosX(
+            (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Congratulations!").x) * 0.5f
+        );
+        ImGui::Text("Congratulations!");
+        ImGui::PopFont();
+        font->Scale /= 5.0f;
+
+        font->Scale *= 4.0f;
+        ImGui::PushFont(font);
+        ImGui::SetCursorPosX(
+            (ImGui::GetWindowSize().x - ImGui::CalcTextSize("A New Record: %d").x) * 0.5f
+        );
+        ImGui::Text("A New Record: %d", score);
+        ImGui::SetCursorPosX(
+            (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Previous: %d").x) * 0.5f
+        );
+        ImGui::Text("Previous: %d", bestScore_);
+        ImGui::PopFont();
+        font->Scale /= 4.0f;
+
+    }
+    else {
+        font->Scale *= 6.0f;
+        ImGui::PushFont(font);
+        ImGui::SetCursorPosX(
+            (ImGui::GetWindowSize().x - ImGui::CalcTextSize("Score: %d").x) * 0.5f
+        );
+        ImGui::Text("Score: %d", score);
+        ImGui::PopFont();
+        font->Scale /= 6.0f;
+    }
+}

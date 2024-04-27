@@ -37,6 +37,7 @@ private:
         std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field
     );
 
+private:
     bool growing{ false };
     int size{ 1 };
     std::size_t gridWidth_;
@@ -47,11 +48,9 @@ private:
     float headX_{ 0.0f };
     float headY_{ 0.0f };
 
-private:
     float speed{ 0.1f };
     Direction direction_{ Direction::kUp };
 
-private:
     CellType cellType_;
     SDL_FPoint initialPosition_;
 };
