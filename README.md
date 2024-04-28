@@ -8,6 +8,67 @@ make build_debug
 ./build/SnakeGame
 ```
 
+## Rubric points
+All points indicate at least one place in the code, but it is obvious that almost all clauses appear more than once in the code.
+### Loops, Functions, I/O
+- The project demonstrates an understanding of C++ functions and control structures.
+  - __while:__ `game.cpp` line 15 `void Game::Run()`
+  - __if:__ `game.cpp` line 31 `void Game::Update()`
+  - __else if:__ `controller.cpp` line 12 `void Controller::HandleInput(bool &running, const std::unique_ptr<GameStateManager>& state_manager)`
+  - __switch:__ `gamefield_factory.cpp` line 13 `std::unique_ptr<GameField> GameFieldFactory::CreateGameField(const GameStateType type)`
+  - __case:__ `gamefield_factory.cpp` line 15, 21, 28 `std::unique_ptr<GameField> GameFieldFactory::CreateGameField(const GameStateType type)`
+  - __default:__ `gamefield_factory.cpp` line 35 `std::unique_ptr<GameField> GameFieldFactory::CreateGameField(const GameStateType type)`
+  - __return:__ `gameplay-manager.cpp` line 18 `void GamePlayManager::ChangeState(const GameStateType nextStateType)`
+  - __for:__ `player_game_field.cpp` line 93 `Winner PlayerGameField::GetWinner()`
+  - __continue:__ `a_star_async.cpp` line 113 `ResultCell AStartAsync::AStarSearch(Cell* const start, const Cell* const goal)`
+  - __break:__ `main_menu_state.cpp` line 21, 24, 27, 30, 33 `void MainMenuState::HandleScreenEvent(const MainMenuEvent event)`
+- The project reads data from a file and process the data, or the program writes data to a file.
+  - __read from file:__ `game_save_data.cpp` line 9, 10 `void Game::LoadBestScore()`
+  - __write to file:__ `game_save_data.cpp` line 52, 53 `void Game::SaveData()`
+- The project accepts user input and processes the input.
+  - __user keyboard input:__ `single_player_state.cpp` line 21, 22 `void SinglePlayerGameState::HandleInput(const SDL_Keycode keyCode)`
+  - __user mouse input:__ `multiplayer_screen.cpp` line 44, 49, 54 `void MultiplayerGameScreen::Render()`
+- The project uses data structures and immutable variables.
+  - __data structures:__ `a_star_async.hpp` line 61 `std::vector<std::vector<Cell*>> grid_{};`
+  - __immutable variables:__ `a_star_async.hpp` line 34: `void calculateHeuristic(const Cell* const goal)`
+
+### Object Oriented Programming
+  - One or more classes are added to the project with appropriate access specifiers for class members.
+    - __class attributes:__ `game_field.hpp` line 37-41
+    - __class methods:__ `gameplay_manager.hpp` line 23-26
+  - Class constructors utilize member initialization lists.
+    - __member initialization:__ `player_game_field.cpp` line 8-10 `PlayerGameField::PlayerGameField(std::size_t gridWidth, std::size_t gridHeight)`
+  - Classes abstract implementation details from their interfaces.
+    - __class interface:__ `game_state_manager.hpp` line 26-29
+    - __expected behavior:__ `game_states.hpp` line 58, 64, 70
+  - Classes follow an appropriate inheritance hierarchy with virtual and override functions.
+    - __inheritance, polymorphism:__ `game_field.hpp` line 20-27
+  - Templates generalize functions or classes in the project.
+    - __template class:__ `screen.hpp` line 19, 20
+
+### Memory Management
+  - The project makes use of references in function declarations.
+    - __reference arg:__ `game_states.hpp` line 58 `void Render(SDL_Renderer *sdl_renderer, SDL_Rect& block)`
+    - __reference arg:__ `a_star_async.hpp` line 58 `ResultCell AStarSearch(Cell* const start, const Cell* const goal)`
+    - __reference attr:__ `renderer.h` line 19, 20
+  - The project uses destructors appropriately.
+    - __destructor:__ `a_star_async.cpp` line 21-29 `AStartAsync::~AStartAsync()`
+  - The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate.
+    - __allocating:__ `a_star_async.cpp` line 15 `AStartAsync::AStartAsync(const std::size_t gridWidth, const std::size_t gridHeight)`
+    - __initializing:__ `a_star_async.cpp` line 41, 42 `void AStartAsync::FindPathAsync(int startX, int startY, const CellType goalCellType, const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field)`
+    - __destruction:__ `a_star_async.cpp` line 24 `AStartAsync::~AStartAsync()`
+  - The project follows the Rule of 5.
+    - __operators, constructors, destructor:__ `a_star_async.hpp` line 42-48
+  - The project uses move semantics to move data instead of copying it, where possible.
+    - __move semantic:__ `game_states.cpp` line 15, 16 `void GameStateBase::MoveGamePlayManager(std::unique_ptr<GamePlayManager>&& manager)`
+  - The project uses smart pointers instead of raw pointers.
+    - __unique_ptr:__ `game_states.hpp` line 77
+
+### Concurrency 
+  - The project uses multithreading.
+    - __multithreading:__ `a_star_async.cpp` line 51 `void AStartAsync::FindPathAsync(int startX, int startY, const CellType goalCellType, const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field)`
+    - __get result:__ `a_star_async.cpp` line 71 `ResultCell AStartAsync::GetResult()`
+
 ## Dependencies 
 All libraries install with vcpkg. The project uses the following libraries:
 - SDL2
