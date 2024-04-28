@@ -1,5 +1,9 @@
 #include "game_state/main_menu_state.hpp"
 
+#include "game_field/gameplay_manager.hpp"
+#include "game_state/game_states.hpp"
+#include "screen/main_menu_screen.hpp"
+
 MainMenuState::MainMenuState(const std::size_t screenWidth, const std::size_t screenHeight) :
     GameState(GameStateType::MAIN_MENU, std::make_unique<MainMenuScreen>(screenWidth, screenHeight))
 {}

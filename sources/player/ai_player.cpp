@@ -1,4 +1,10 @@
+#include <unordered_map>
+
 #include "player/ai_player.hpp"
+#include "game_field/cell_type.hpp"
+#include "player/move_direction.hpp"
+#include "player/player.hpp"
+#include "player/player_id.hpp"
 
 PlayerAI::PlayerAI(const PlayerId id, const std::size_t gridWidth, const std::size_t gridHeight) :
     Player{ id, gridWidth, gridHeight }, aStar_{ gridWidth, gridHeight } {

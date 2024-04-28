@@ -1,6 +1,8 @@
 #include "screen/main_menu_screen.hpp"
 
-MainMenuScreen::MainMenuScreen(const std::size_t screenWidth, const std::size_t screenHeight):
+#include "screen/screen.hpp"
+
+MainMenuScreen::MainMenuScreen(const std::size_t screenWidth, const std::size_t screenHeight) :
     Screen(screenWidth, screenHeight)
 {
 }

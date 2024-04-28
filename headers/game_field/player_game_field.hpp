@@ -2,7 +2,9 @@
 
 #include <random>
 
+#include "cell_type.hpp"
 #include "game_field/game_field.hpp"
+#include "player/player_id.hpp"
 
 
 class PlayerGameField : public GameField

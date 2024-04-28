@@ -1,6 +1,6 @@
 #pragma once
 
-#include "player/move_direction.hpp"
+#include "SDL_keycode.h"
 #include "player/player_id.hpp"
 #include "player/player.hpp"
 #include "player/a_star_async.hpp"

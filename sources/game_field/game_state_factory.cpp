@@ -1,5 +1,6 @@
 #include "game_state/game_state_factory.hpp"
 
+#include "game_state/game_state_type.hpp"
 #include "game_state/single_player_state.hpp"
 #include "game_state/multiplayer_state.hpp"
 #include "game_state/main_menu_state.hpp"

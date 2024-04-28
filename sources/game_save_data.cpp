@@ -1,10 +1,12 @@
 #include <fstream>
-
+#include <nlohmann/json.hpp>
 #include "game_save_data.hpp"
+
+const std::string GameSaveData::SAVE_FILE_PATH{ "data/save.json" };
 
 void GameSaveData::PreloadData() {
     nlohmann::json saveDataJson;
-    std::ifstream saveDataFile("data/save.json");
+    std::ifstream saveDataFile(SAVE_FILE_PATH);
     saveDataFile >> saveDataJson;
 
     for (auto& [key, value] : saveDataJson.items()) {
@@ -47,7 +49,7 @@ void GameSaveData::SaveData() {
         saveDataJson[key] = stateJson;
     }
 
-    std::ofstream saveDataFile("data/save.json");
+    std::ofstream saveDataFile(SAVE_FILE_PATH);
     saveDataFile << saveDataJson.dump(2);
 }
 

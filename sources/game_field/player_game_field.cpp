@@ -1,9 +1,13 @@
 #include "game_field/player_game_field.hpp"
 
-PlayerGameField::PlayerGameField(std::size_t gridWidth, std::size_t gridHeight) : GameField(gridWidth, gridHeight),
-randomEngine_(randomDev_()),
-randomWidth_(0, static_cast<int>(gridWidth - 1)),
-randomHeight_(0, static_cast<int>(gridHeight - 1))
+#include "game_field/cell_type.hpp"
+#include "player/snake.h"
+
+PlayerGameField::PlayerGameField(std::size_t gridWidth, std::size_t gridHeight) :
+    GameField(gridWidth, gridHeight),
+    randomEngine_(randomDev_()),
+    randomWidth_(0, static_cast<int>(gridWidth - 1)),
+    randomHeight_(0, static_cast<int>(gridHeight - 1))
 {}
 
 inline void PlayerGameField::Init()

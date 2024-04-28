@@ -50,7 +50,7 @@ public:
     void FindPathAsync(int startX, int startY, const CellType goalCellType, 
         const std::unordered_map<std::size_t, std::unordered_map<std::size_t, CellType>>& field);
 
-	bool ReadyToSearch() const;
+    bool ReadyToSearch() const;
     bool HasResult() const;
     ResultCell GetResult();
 

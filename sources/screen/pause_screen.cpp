@@ -1,6 +1,8 @@
 #include "imgui.h"
 #include "screen/pause_screen.hpp"
 
+#include "screen/screen.hpp"
+
 
 PauseGameScreen::PauseGameScreen(const std::size_t screenWidth, const std::size_t screenHeight):
     Screen(screenWidth, screenHeight)

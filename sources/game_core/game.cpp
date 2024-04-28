@@ -1,4 +1,3 @@
-#include "SDL.h"
 #include "game_core/game.h"
 
 
