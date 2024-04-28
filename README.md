@@ -1,5 +1,9 @@
 # Submission overview
 
+
+## Clone the project
+`git clone --recurse-submodules`
+
 ## Udacity workspace build
 ```
 make init_env
